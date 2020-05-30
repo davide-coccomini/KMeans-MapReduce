@@ -1,0 +1,7 @@
+it/unipi/hadoop/Point.class
+it/unipi/hadoop/KMeansReducer$COUNTER.class
+it/unipi/hadoop/KMeans.class
+it/unipi/hadoop/KMeansMapper.class
+it/unipi/hadoop/KMeansCombiner.class
+it/unipi/hadoop/Centroid.class
+it/unipi/hadoop/KMeansReducer.class

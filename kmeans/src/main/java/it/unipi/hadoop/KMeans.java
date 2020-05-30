@@ -1,0 +1,180 @@
+package it.unipi.hadoop;
+
+import java.io.IOException;
+import java.io.*;
+import java.util.StringTokenizer;
+import java.util.Random;
+import java.util.List; 
+import java.util.ArrayList;
+
+import org.apache.hadoop.conf.Configuration;
+import org.apache.hadoop.fs.Path;
+import org.apache.hadoop.io.Text;
+import org.apache.hadoop.mapreduce.Job;
+import org.apache.hadoop.mapreduce.Mapper;
+import org.apache.hadoop.mapreduce.Reducer;
+import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
+import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
+import org.apache.hadoop.fs.FileSystem;
+import org.apache.hadoop.io.IntWritable;
+import org.apache.hadoop.io.SequenceFile;
+import org.apache.hadoop.io.SequenceFile.Writer;
+import org.apache.hadoop.io.SequenceFile.Reader;
+import org.apache.hadoop.io.DoubleWritable;
+
+public class KMeans 
+{
+    private static void generateRandomCentroids(Configuration conf, int k, int dimension, Path centroidsPath) throws IOException{
+        System.out.println("Generate Random Centroids");
+        FileSystem fs = FileSystem.get(conf);
+        
+        
+        Writer.Option fileOption = Writer.file(centroidsPath);
+        Writer.Option keyClassOption = Writer.keyClass(IntWritable.class);
+        Writer.Option valueClassOption = Writer.valueClass(Centroid.class);
+        
+        Writer writer = SequenceFile.createWriter(conf, fileOption, keyClassOption, valueClassOption);
+ 
+        
+        System.out.println("Centroids from iris.txt:");
+        try{
+            BufferedReader br = new BufferedReader(new FileReader("iris.txt"));
+
+            for(int index = 0; index < k; index++){
+                String line = br.readLine();
+                System.out.println("Line:" + line);
+                String[] coordinates_strings = line.toString().split(",");
+                List<DoubleWritable> coordinates = new ArrayList<DoubleWritable>();
+                for(int j = 0; j < dimension; j++){
+                    coordinates.add(new DoubleWritable(Double.parseDouble(coordinates_strings[j])));
+                }
+                Centroid centroid = new Centroid(coordinates, new IntWritable(index), new IntWritable(0));
+                System.out.println("Centroid:" + centroid.toString());
+                writer.append(new IntWritable(index), centroid);
+            }
+            
+            br.close();
+        }
+        catch(IOException ex){
+            System.out.println("Errore generico così non si capisce dove è");
+            ex.printStackTrace();
+        }
+            
+        
+        /*
+        Random generator = new Random();
+
+        List<DoubleWritable> randomNumbers = new ArrayList<DoubleWritable>();
+        for(int centroidIndex=0; centroidIndex<k; centroidIndex++){
+            for(int dimensionIndex=0; dimensionIndex < conf.getInt("dimension", 2); dimensionIndex++){
+                randomNumbers.add(new DoubleWritable(Math.floor(100.0 * generator.nextDouble())));
+            }
+            Centroid centroid = new Centroid(randomNumbers, new IntWritable(centroidIndex), new IntWritable(0));
+            System.out.println(centroid.toString());
+            writer.append(new IntWritable(centroidIndex), centroid);
+            randomNumbers = new ArrayList<DoubleWritable>();
+        }
+        
+        */
+        writer.syncFs();
+        writer.close();
+        
+        fs = FileSystem.get(conf);
+        
+        
+        SequenceFile.Reader reader = new SequenceFile.Reader(fs, centroidsPath, conf);
+        IntWritable key = new IntWritable();
+        Centroid value = new Centroid();
+        
+        System.out.println("Centroids from seq file:");
+        while(reader.next(key,value)){
+            System.out.println(value.toString());
+        }
+        reader.close();
+        
+    } 
+    
+    public static void main( String[] args )
+    {
+        System.out.println("Main method");
+        try {
+            final Configuration conf = new Configuration();
+            FileSystem hdfs = FileSystem.get(conf);
+
+            int k = Integer.parseInt(args[0]);
+            conf.setInt("k", k);
+            int dimension = Integer.parseInt(args[1]);
+            conf.setInt("dimension", dimension);
+
+            Path inputPath = new Path(args[2]);
+            Path outputPath = new Path(args[3]);
+            Path centroidsPath = new Path("centroids/centroids.seq");
+
+            generateRandomCentroids(conf, k, dimension, centroidsPath);
+
+            boolean converged = false;
+
+            conf.set("centroidsPath", centroidsPath.toString());
+            conf.set("threshold", args[4]);
+            Job job = null;
+            int iteration = 0;
+            while(!converged){
+                System.out.println("Iteration: " + iteration);
+                
+                
+                hdfs = FileSystem.get(conf);
+
+                SequenceFile.Reader reader = new SequenceFile.Reader(hdfs, centroidsPath, conf);
+                IntWritable key = new IntWritable();
+                Centroid value = new Centroid();
+
+                int counter = 0;
+                System.out.println("Centroidi");
+                while(reader.next(key,value)){
+                    System.out.println(counter++);
+                }
+                reader.close();
+                
+                
+                job = new Job(conf, "kmeans");
+
+                FileInputFormat.addInputPath(job, inputPath);
+                FileOutputFormat.setOutputPath(job, outputPath);
+
+                job.setJarByClass(KMeans.class);
+
+
+                job.setMapperClass(KMeansMapper.class);
+                job.setCombinerClass(KMeansCombiner.class);
+                job.setReducerClass(KMeansReducer.class);
+                
+                job.setOutputKeyClass(Centroid.class);
+                job.setOutputValueClass(Point.class);
+                
+                
+                job.setNumReduceTasks(1);
+
+                boolean completed = job.waitForCompletion(true);
+
+
+                if(!completed){
+                    System.out.println("Errore durante l'esecuzione del Job");
+                    System.exit(0);
+                }
+                converged = (job.getCounters().findCounter(KMeansReducer.COUNTER.CONVERGED).getValue() == 1);
+                
+                
+                iteration++;
+                if (hdfs.exists(outputPath) && !converged){ //clean the output folder for a new execution
+                  hdfs.delete(outputPath, true);
+                }
+                
+            }
+            
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+    }
+   
+
+}
