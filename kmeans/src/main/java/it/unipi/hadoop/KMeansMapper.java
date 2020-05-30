@@ -48,7 +48,8 @@ public class KMeansMapper extends Mapper<Object, Text, Centroid, Point> {
             centroid.setPointsCounter(new IntWritable(0));
             centroid.setIndex(key);
             centroids.add(centroid);
-            
+            System.out.println("CENTROIDE LETTO");
+            System.out.println(centroid);
         }
         reader.close();
     }
@@ -56,7 +57,6 @@ public class KMeansMapper extends Mapper<Object, Text, Centroid, Point> {
     /* MAP: Find the nearest centroid to the considered point comparing it with all the centroids readed from the file */
     @Override
     public void map(Object key, Text value, Context context) throws IOException, InterruptedException {
-        System.out.println("MAPPER");
         String readedLine = value.toString();
         List<DoubleWritable> coordinates = new ArrayList<DoubleWritable>();
         StringTokenizer tokenizer = new StringTokenizer(readedLine, ",");

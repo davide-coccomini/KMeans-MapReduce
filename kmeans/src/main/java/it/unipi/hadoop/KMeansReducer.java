@@ -15,13 +15,13 @@ import org.apache.hadoop.fs.FileSystem;
 public class KMeansReducer extends Reducer<Centroid, Point, IntWritable, Centroid> { 
     private HashMap<IntWritable, Centroid> oldCentroids = new HashMap<IntWritable, Centroid>();
     private HashMap<IntWritable, Centroid> newCentroids = new HashMap<IntWritable, Centroid>();
+    private int convergedCentroids = 0;
     public enum COUNTER {CONVERGED}
     
     /* REDUCE: Gets a considered centroid as a key and a list of points. Calculate the new centroid starting from the partial sums. */
     /* Save the nw centroid and the old one in two hashmaps. These will be used in the cleanup function for the distance calculation. */
     @Override
     public void reduce(Centroid consideredCentroid, Iterable<Point> points, Context context) throws InterruptedException, IOException{
-        System.out.println("REDUCER");
         Configuration conf = context.getConfiguration();
         Centroid newCentroid = new Centroid(conf.getInt("dimension", 2));
         boolean alreadySavedCentroid = false;
@@ -45,13 +45,6 @@ public class KMeansReducer extends Reducer<Centroid, Point, IntWritable, Centroi
             oldCentroids.put(consideredCentroid.getIndex(), new Centroid(consideredCentroid));
             newCentroids.put(newCentroid.getIndex(), newCentroid);
         }
-        
-        System.out.println("oldCentroids");
-        System.out.println(oldCentroids.get(newCentroid.getIndex()).toString());
-        
-        System.out.println("newCentroids");
-        System.out.println(newCentroids.get(newCentroid.getIndex()).toString());
-        
     }
     /* CLEANUP: Starting from the hashmaps containg the old and new centroids, calculate the distances between them. */
     /* Check for the convergence of the centroids comparing the mean distance with a fixed treshold. */
@@ -69,8 +62,6 @@ public class KMeansReducer extends Reducer<Centroid, Point, IntWritable, Centroi
         
         Writer writer = SequenceFile.createWriter(conf, fileOption, keyClassOption, valueClassOption);
         
-        
-        
         int k = conf.getInt("k", 2);
         Iterator<Centroid> centroidsIterator = newCentroids.values().iterator();
         Centroid newCentroid;  // The new considered centroid
@@ -82,7 +73,9 @@ public class KMeansReducer extends Reducer<Centroid, Point, IntWritable, Centroi
             newCentroid = centroidsIterator.next();
             newCentroid.calculateCentroid();
             oldCentroid = oldCentroids.get(newCentroid.getIndex());
-            meanDistance = newCentroid.calculateDistance(oldCentroid);
+            if (threshold > newCentroid.calculateDistance(oldCentroid))
+                convergedCentroids++;
+            meanDistance += Math.pow(newCentroid.calculateDistance(oldCentroid), 2);
             writer.append(newCentroid.getIndex(), newCentroid);
             context.write(newCentroid.getIndex(), newCentroid);
         }
@@ -90,8 +83,9 @@ public class KMeansReducer extends Reducer<Centroid, Point, IntWritable, Centroi
         writer.syncFs();
         writer.close();
         
-        meanDistance = meanDistance / k;
-        if(meanDistance < threshold){
+        int percentSize = (newCentroids.size() * 90) / 100;
+        meanDistance = Math.sqrt(meanDistance / k);
+        if(convergedCentroids >= percentSize || meanDistance < threshold){
             context.getCounter(COUNTER.CONVERGED).increment(1);
         }
     }

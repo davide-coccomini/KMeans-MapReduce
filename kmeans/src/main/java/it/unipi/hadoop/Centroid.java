@@ -71,7 +71,7 @@ public class Centroid extends Point{
     }
     
     public String toString(){
-        return "Index: " + this.getIndex() + " " + super.toString();
+        return this.getIndex() + " " + super.toString();
     }
     
     /* Calculate the division between the sum of the coordinates contained in a centroid and their number. */

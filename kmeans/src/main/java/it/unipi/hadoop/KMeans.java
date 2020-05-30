@@ -24,7 +24,7 @@ import org.apache.hadoop.io.DoubleWritable;
 
 public class KMeans 
 {
-    private static void generateRandomCentroids(Configuration conf, int k, int dimension, Path centroidsPath) throws IOException{
+    private static void generateRandomCentroids(Configuration conf, int k, int dimension, int instances, Path centroidsPath, String fileName) throws IOException{
         System.out.println("Generate Random Centroids");
         FileSystem fs = FileSystem.get(conf);
         
@@ -35,13 +35,18 @@ public class KMeans
         
         Writer writer = SequenceFile.createWriter(conf, fileOption, keyClassOption, valueClassOption);
  
-        
-        System.out.println("Centroids from iris.txt:");
         try{
-            BufferedReader br = new BufferedReader(new FileReader("iris.txt"));
-
+            
+            Random generator = new Random();
             for(int index = 0; index < k; index++){
-                String line = br.readLine();
+                BufferedReader br = new BufferedReader(new FileReader(fileName));
+                String line = null;
+                
+                int linesToSkip = (generator.nextInt(instances-1));
+                
+                for(int i = 0; i <= linesToSkip; i++){
+                    line = br.readLine();
+                }
                 System.out.println("Line:" + line);
                 String[] coordinates_strings = line.toString().split(",");
                 List<DoubleWritable> coordinates = new ArrayList<DoubleWritable>();
@@ -51,36 +56,22 @@ public class KMeans
                 Centroid centroid = new Centroid(coordinates, new IntWritable(index), new IntWritable(0));
                 System.out.println("Centroid:" + centroid.toString());
                 writer.append(new IntWritable(index), centroid);
+                br.close();
             }
             
-            br.close();
         }
         catch(IOException ex){
             System.out.println("Errore generico così non si capisce dove è");
             ex.printStackTrace();
         }
-            
+          
         
-        /*
-        Random generator = new Random();
-
-        List<DoubleWritable> randomNumbers = new ArrayList<DoubleWritable>();
-        for(int centroidIndex=0; centroidIndex<k; centroidIndex++){
-            for(int dimensionIndex=0; dimensionIndex < conf.getInt("dimension", 2); dimensionIndex++){
-                randomNumbers.add(new DoubleWritable(Math.floor(100.0 * generator.nextDouble())));
-            }
-            Centroid centroid = new Centroid(randomNumbers, new IntWritable(centroidIndex), new IntWritable(0));
-            System.out.println(centroid.toString());
-            writer.append(new IntWritable(centroidIndex), centroid);
-            randomNumbers = new ArrayList<DoubleWritable>();
-        }
+      
         
-        */
         writer.syncFs();
         writer.close();
         
         fs = FileSystem.get(conf);
-        
         
         SequenceFile.Reader reader = new SequenceFile.Reader(fs, centroidsPath, conf);
         IntWritable key = new IntWritable();
@@ -91,6 +82,7 @@ public class KMeans
             System.out.println(value.toString());
         }
         reader.close();
+        
         
     } 
     
@@ -106,16 +98,17 @@ public class KMeans
             int dimension = Integer.parseInt(args[1]);
             conf.setInt("dimension", dimension);
 
-            Path inputPath = new Path(args[2]);
-            Path outputPath = new Path(args[3]);
+            Path inputPath = new Path(args[3]);
+            Path outputPath = new Path(args[4]);
             Path centroidsPath = new Path("centroids/centroids.seq");
 
-            generateRandomCentroids(conf, k, dimension, centroidsPath);
+            generateRandomCentroids(conf, k, dimension, Integer.parseInt(args[2]), centroidsPath, args[3]);
 
             boolean converged = false;
 
             conf.set("centroidsPath", centroidsPath.toString());
-            conf.set("threshold", args[4]);
+            conf.set("threshold", args[5]);
+            
             Job job = null;
             int iteration = 0;
             while(!converged){

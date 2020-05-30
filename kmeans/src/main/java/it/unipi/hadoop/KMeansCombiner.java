@@ -11,9 +11,8 @@ public class KMeansCombiner extends Reducer<Centroid, Point, Centroid, Point> {
     @Override
     public void reduce(Centroid centroid, Iterable<Point> points, Context context) throws InterruptedException, IOException {
         Configuration conf = context.getConfiguration();
-        
         int counter = 0;
-        Point partialSum = new Point(conf.getInt("dimension", 2)); // TODO: Evaluate complex class for partialSum
+        Point partialSum = new Point(conf.getInt("dimension", 2)); 
         
         for(Point point: points){
             for(int i=0; i<conf.getInt("dimension", 2); i++){

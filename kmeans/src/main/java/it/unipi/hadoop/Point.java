@@ -53,7 +53,7 @@ public class Point implements WritableComparable<Centroid> {
     }
     
     public String toString() {
-        String line = "Coordinates: ";
+        String line = "";
         for(DoubleWritable coordinate : coordinates) {
             line += coordinate.get() + ",";
         }
@@ -65,15 +65,15 @@ public class Point implements WritableComparable<Centroid> {
     }
     
     public Double calculateDistance(Point point){
-        System.out.println("Calculate Distance");
+        //System.out.println("Calculate Distance");
         Double sum = 0.0;
         for (int i = 0; i < point.getCoordinates().size(); i++) {
             Double point_coordinates = point.getCoordinates().get(i).get();
             Double centroid_coordinates = this.getCoordinates().get(i).get();
             sum += Math.pow(centroid_coordinates - point_coordinates,  2);
         }
-        System.out.println("Distance: " + sum);
-        System.out.println("Point: " + point.toString());
+        //System.out.println("Distance: " + sum);
+        //System.out.println("Point: " + point.toString());
         return Math.sqrt(sum);
     }
     
