@@ -45,6 +45,9 @@ public class KMeansReducer extends Reducer<Centroid, Point, IntWritable, Centroi
             oldCentroids.put(consideredCentroid.getIndex(), new Centroid(consideredCentroid));
             newCentroids.put(newCentroid.getIndex(), newCentroid);
         }
+
+	//context.write(newCentroid.getIndex(), newCentroid);
+
     }
     /* CLEANUP: Starting from the hashmaps containg the old and new centroids, calculate the distances between them. */
     /* Check for the convergence of the centroids comparing the mean distance with a fixed treshold. */

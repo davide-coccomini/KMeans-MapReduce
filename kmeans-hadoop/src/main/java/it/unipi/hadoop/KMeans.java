@@ -89,6 +89,10 @@ public class KMeans
     public static void main( String[] args )
     {
         System.out.println("Main method");
+	 if(args.length != 6){
+                System.out.println("Usage: KMeans.jar <k> <d> <n> <input> <output> <threshold>");
+        }
+
         try {
             final Configuration conf = new Configuration();
             FileSystem hdfs = FileSystem.get(conf);

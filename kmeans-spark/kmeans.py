@@ -40,28 +40,30 @@ if __name__ == "__main__":
     if len(sys.argv) != 4:
         print("Usage: kmeans <k> <threshold> <file>", file=sys.stderr)
         sys.exit(-1)
-    
+
     k = int(sys.argv[1])
     threshold = float(sys.argv[2])
     filename = sys.argv[3]
-    
-    master = "local"
+
+    master = "yarn"
     sc = SparkContext(master, "kmeans1")
-    
+
     lines = sc.textFile(filename)
-    
+
     ##CENTROIDS CONVERSION
     tmp = [line.split(",") for line in lines.takeSample(False, k)]
-    
+
     for index, centroid in enumerate(tmp):
         centroids += [[index, [float(string) for string in centroid]]]
-    
-    
+
+
     ##POINTS CONVERSION
     points_rdd = lines.map(lambda line: [[float(string) for string in line.split(',')], 1])
+    #points_rdd.cache()
 
     while(maxIterations > iterations):
         iterations += 1
+        print("Iteration: " + str(iterations))
         #MAP
         mapped_rdd = points_rdd.keyBy(lambda point : selectCentroid(point[0], centroids))
 
@@ -84,23 +86,22 @@ if __name__ == "__main__":
         convergedCentroids = 0
         for index, centroid in enumerate(centroids):
             distance = calculateDistance(centroid[1], new_centroids[index][1])
-            
+
             if distance < threshold:
                 convergedCentroids+=1
-        
+
         centroids = new_centroids
-        
+
         percentage = len(centroids) * 80 / 100
-        
+
         if convergedCentroids > percentage:
             print("Centroids converged")
             break
-            
-    
+
     print(new_centroids)
     sc.stop()
-    
-    
+
+
     
     
     

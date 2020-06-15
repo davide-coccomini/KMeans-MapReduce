@@ -76,7 +76,8 @@ public class KMeansMapper extends Mapper<Object, Text, Centroid, Point> {
                 minDistance = tempDistance;
                 nearestCentroid = centroid;
             }
-            context.write(nearestCentroid, point);
-        }
+	}
+        context.write(nearestCentroid, point);
+        
     }
 }

@@ -1,6 +1,4 @@
 import sys
-import numpy as np
-import matplotlib.pyplot as mplot
 from sklearn.datasets import make_blobs
 
 DATA_PATH = "input/"
