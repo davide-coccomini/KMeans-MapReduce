@@ -61,7 +61,7 @@ public class KMeans
             
         }
         catch(IOException ex){
-            System.out.println("Errore generico così non si capisce dove è");
+            System.out.println("Error reading file");
             ex.printStackTrace();
         }
           
@@ -145,9 +145,10 @@ public class KMeans
                 job.setCombinerClass(KMeansCombiner.class);
                 job.setReducerClass(KMeansReducer.class);
                 
-                job.setOutputKeyClass(Centroid.class);
-                job.setOutputValueClass(Point.class);
-                
+                job.setOutputKeyClass(IntWritable.class);
+                job.setOutputValueClass(Centroid.class);
+                job.setMapOutputKeyClass(Centroid.class);
+                job.setMapOutputValueClass(Point.class);
                 
                 job.setNumReduceTasks(1);
 

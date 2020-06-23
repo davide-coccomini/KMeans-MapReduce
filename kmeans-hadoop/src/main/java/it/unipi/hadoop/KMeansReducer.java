@@ -24,13 +24,7 @@ public class KMeansReducer extends Reducer<Centroid, Point, IntWritable, Centroi
     public void reduce(Centroid consideredCentroid, Iterable<Point> points, Context context) throws InterruptedException, IOException{
         Configuration conf = context.getConfiguration();
         Centroid newCentroid = new Centroid(conf.getInt("dimension", 2));
-        boolean alreadySavedCentroid = false;
-        
-        if(newCentroids.containsKey(consideredCentroid.getIndex())){
-            newCentroid = newCentroids.get(consideredCentroid.getIndex());
-            alreadySavedCentroid = true;
-        }
-        
+   
         int counterPoints = newCentroid.getPointsCounter().get();
         for(Point point : points) {
             for (int i = 0; i < point.getCoordinates().size(); i++) {
@@ -41,12 +35,9 @@ public class KMeansReducer extends Reducer<Centroid, Point, IntWritable, Centroi
         newCentroid.setIndex(consideredCentroid.getIndex());
         newCentroid.setPointsCounter(new IntWritable(counterPoints));
         
-        if(!alreadySavedCentroid){
-            oldCentroids.put(consideredCentroid.getIndex(), new Centroid(consideredCentroid));
-            newCentroids.put(newCentroid.getIndex(), newCentroid);
-        }
+        oldCentroids.put(consideredCentroid.getIndex(), new Centroid(consideredCentroid));
+        newCentroids.put(newCentroid.getIndex(), newCentroid);
 
-	//context.write(newCentroid.getIndex(), newCentroid);
 
     }
     /* CLEANUP: Starting from the hashmaps containg the old and new centroids, calculate the distances between them. */

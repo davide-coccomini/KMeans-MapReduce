@@ -59,7 +59,7 @@ if __name__ == "__main__":
 
     ##POINTS CONVERSION
     points_rdd = lines.map(lambda line: [[float(string) for string in line.split(',')], 1])
-    #points_rdd.cache()
+    points_rdd.cache()
 
     while(maxIterations > iterations):
         iterations += 1
@@ -101,9 +101,3 @@ if __name__ == "__main__":
     print(new_centroids)
     sc.stop()
 
-
-    
-    
-    
-    
-    

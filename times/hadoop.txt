@@ -1,0 +1,12 @@
+hadoop jar ../kmeans-hadoop/target/kmeans-1.0-SNAPSHOT.jar it.unipi.hadoop.KMeans 7 7 1000 7d_1000n_7k.txt output7d_1000n_7k.txt 0.5
+hadoop jar ../kmeans-hadoop/target/kmeans-1.0-SNAPSHOT.jar it.unipi.hadoop.KMeans 13 3 10000 3d_10000n_13k.txt output3d_10000n_13k.txt 0.5
+hadoop jar ../kmeans-hadoop/target/kmeans-1.0-SNAPSHOT.jar it.unipi.hadoop.KMeans 7 7 10000 7d_10000n_7k.txt output7d_10000n_7k.txt 0.5
+hadoop jar ../kmeans-hadoop/target/kmeans-1.0-SNAPSHOT.jar it.unipi.hadoop.KMeans 7 3 10000 3d_10000n_7k.txt output3d_10000n_7k.txt 0.5
+hadoop jar ../kmeans-hadoop/target/kmeans-1.0-SNAPSHOT.jar it.unipi.hadoop.KMeans 7 3 1000 3d_1000n_7k.txt output3d_1000n_7k.txt 0.5
+hadoop jar ../kmeans-hadoop/target/kmeans-1.0-SNAPSHOT.jar it.unipi.hadoop.KMeans 13 3 1000 3d_1000n_13k.txt output3d_1000n_13k.txt 0.5
+hadoop jar ../kmeans-hadoop/target/kmeans-1.0-SNAPSHOT.jar it.unipi.hadoop.KMeans 13 7 100000 7d_100000n_13k.txt output7d_100000n_13k.txt 0.5
+hadoop jar ../kmeans-hadoop/target/kmeans-1.0-SNAPSHOT.jar it.unipi.hadoop.KMeans 7 7 100000 7d_100000n_7k.txt output7d_100000n_7k.txt 0.5
+hadoop jar ../kmeans-hadoop/target/kmeans-1.0-SNAPSHOT.jar it.unipi.hadoop.KMeans 13 7 10000 7d_10000n_13k.txt output7d_10000n_13k.txt 0.5
+hadoop jar ../kmeans-hadoop/target/kmeans-1.0-SNAPSHOT.jar it.unipi.hadoop.KMeans 7 3 100000 3d_100000n_7k.txt output3d_100000n_7k.txt 0.5
+hadoop jar ../kmeans-hadoop/target/kmeans-1.0-SNAPSHOT.jar it.unipi.hadoop.KMeans 13 7 1000 7d_1000n_13k.txt output7d_1000n_13k.txt 0.5
+hadoop jar ../kmeans-hadoop/target/kmeans-1.0-SNAPSHOT.jar it.unipi.hadoop.KMeans 13 3 100000 3d_100000n_13k.txt output3d_100000n_13k.txt 0.5

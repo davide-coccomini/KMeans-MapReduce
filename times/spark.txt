@@ -1,1 +1,12 @@
-3,10000,7,39.69425415992737
+spark-submit kmeans-spark/kmeans.py 7 0.5 7d_1000n_7k.txt
+spark-submit kmeans-spark/kmeans.py 13 0.5 3d_10000n_13k.txt
+spark-submit kmeans-spark/kmeans.py 7 0.5 7d_10000n_7k.txt
+spark-submit kmeans-spark/kmeans.py 7 0.5 3d_10000n_7k.txt
+spark-submit kmeans-spark/kmeans.py 7 0.5 3d_1000n_7k.txt
+spark-submit kmeans-spark/kmeans.py 13 0.5 3d_1000n_13k.txt
+spark-submit kmeans-spark/kmeans.py 13 0.5 7d_100000n_13k.txt
+spark-submit kmeans-spark/kmeans.py 7 0.5 7d_100000n_7k.txt
+spark-submit kmeans-spark/kmeans.py 13 0.5 7d_10000n_13k.txt
+spark-submit kmeans-spark/kmeans.py 7 0.5 3d_100000n_7k.txt
+spark-submit kmeans-spark/kmeans.py 13 0.5 7d_1000n_13k.txt
+spark-submit kmeans-spark/kmeans.py 13 0.5 3d_100000n_13k.txt

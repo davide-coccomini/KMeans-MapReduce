@@ -1,0 +1,22 @@
+import os
+import subprocess
+
+
+INPUT_PATH = "input/"
+HADOOP_PATH = "kmeans-hadoop/"
+SPARK_PATH = "kmeans-spark/"
+RESULT_PATH = "times/"
+
+
+#SPARK TESTING
+for file in os.listdir()
+
+
+
+test = subprocess.Popen(["ls","-l"], stdout=subprocess.PIPE)
+output = test.communicate()[0]
+print(output)
+
+
+
+"hadoop jar wordcount-1.0-SNAPSHOT.jar it.unipi.hadoop.WordCount pg100.txt output"
