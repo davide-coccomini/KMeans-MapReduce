@@ -18,10 +18,10 @@ More in detail, the whole MapReduce process goes through four steps of execution
 In this project, the following structure of MapReduce algorithm will be used:
 
 The Mapper algorithm takes as input a point and, after reading the centroids, initially randomly created, from a file, assigns it to te nearest centroid. At the end emits a pair of centroid-point.
-![Map method](https://github.com/davide-coccomini/kmeans-mapreduce/)
+![Map method](https://github.com/davide-coccomini/kmeans-mapreduce/Images/MapMethod.JPG)
 
 The Combiner algorithm takes as input a centroid and a list of points and first computes the list dimension, then for each point in the list calculates the partial sum. At the end emits a pair of centroid and partial sum.
-![Combine method](https://github.com/davide-coccomini/kmeans-mapreduce/)
+![Combine method](https://github.com/davide-coccomini/kmeans-mapreduce/Images/CombineMethod.JPG)
 
 The Reducer algorithm takes as input a centroid and a list of partial sums. As the Combiner, it computes the list dimension and for each partial sum belonging to the list calculates the new centroid as the ratio between the total sum and the list dimension. At the end emits the centroid index and the new centroid.
-![Reduce method](https://github.com/davide-coccomini/kmeans-mapreduce/)
+![Reduce method](https://github.com/davide-coccomini/kmeans-mapreduce/Images/ReduceMethod.JPG)
