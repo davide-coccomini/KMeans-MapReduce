@@ -17,11 +17,17 @@ More in detail, the whole MapReduce process goes through four steps of execution
 ### Hadoop framework
 In this project, the following structure of MapReduce algorithm will be used:
 
-The Mapper algorithm takes as input a point and, after reading the centroids, initially randomly created, from a file, assigns it to te nearest centroid. At the end emits a pair of centroid-point.
-![Map method](https://github.com/davide-coccomini/kmeans-mapreduce/blob/master/Images/MapMethod.JPG?raw=true)
+The Mapper algorithm takes as input a point and all the centroids, then it saves the nearest centroid and at the end emits a centroid-(point, count) pair, where count is always equal to 1.
+<p align="center">
+  <img src="https://github.com/davide-coccomini/kmeans-mapreduce/blob/master/Images/MapMethod.JPG">
+</p>
 
-The Combiner algorithm takes as input a centroid and a list of points and first computes the list dimension, then for each point in the list calculates the partial sum. At the end emits a pair of centroid and partial sum.
-![Combine method](https://github.com/davide-coccomini/kmeans-mapreduce/blob/tree/master/Images/CombineMethod.JPG?raw=true)
+The Combiner algorithm takes as input a centroid and a list of points together with their count. For all points in the list calculates the partial count as the sum of all the counts and the partial sum as the sum of all the points. At the end emits the centroid as the key and the partialSum, partialCount pair as value.
+<p align="center">
+  <img src="https://github.com/davide-coccomini/kmeans-mapreduce/blob/master/Images/CombineMethod.JPG">
+</p>
 
-The Reducer algorithm takes as input a centroid and a list of partial sums. As the Combiner, it computes the list dimension and for each partial sum belonging to the list calculates the new centroid as the ratio between the total sum and the list dimension. At the end emits the centroid index and the new centroid.
-![Reduce method](https://github.com/davide-coccomini/kmeans-mapreduce/blob/tree/master/Images/ReduceMethod.JPG?raw=true)
+The Reducer algorithm takes as input a centroid and a list of partial sums together at the partial counts. As the Combiner, it calculate the sum of all the count and the sum of all the point, in addition the Reduce method calculates the new centroid as the ratio between the point sum and the count sum. At the end emits the old centroid and the new centroid together at a count equal to 0.
+<p align="center">
+  <img src="https://github.com/davide-coccomini/kmeans-mapreduce/blob/master/Images/ReduceMethod.JPG">
+</p>
