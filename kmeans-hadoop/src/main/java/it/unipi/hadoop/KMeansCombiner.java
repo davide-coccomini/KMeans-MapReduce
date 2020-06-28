@@ -16,13 +16,13 @@ public class KMeansCombiner extends Reducer<Centroid, Point, Centroid, Point> {
         
         for(Point point: points){
             for(int i=0; i<conf.getInt("dimension", 2); i++){
-                double one = partialSum.getCoordinates().get(i).get();
-                double two = point.getCoordinates().get(i).get();
-                partialSum.getCoordinates().get(i).set(one + two); 
+                double partialSumCoordinate = partialSum.getCoordinates().get(i).get();
+                double pointCoordinate = point.getCoordinates().get(i).get();
+                partialSum.getCoordinates().get(i).set(partialSumCoordinate + pointCoordinate); 
             }
             counter++;
         }
-        centroid.setPointsCounter(new IntWritable(counter));
+        partialSum.setPointsCounter(new IntWritable(counter));
         context.write(centroid, partialSum);
     }
     

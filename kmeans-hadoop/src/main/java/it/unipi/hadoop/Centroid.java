@@ -15,7 +15,6 @@ import javax.annotation.Nonnull;
 
 public class Centroid extends Point{
     private IntWritable index;
-    private IntWritable pointsCounter;
     
     Centroid() {
         super();
@@ -30,32 +29,27 @@ public class Centroid extends Point{
     }
     
     Centroid(List<DoubleWritable> coordinates, IntWritable index, IntWritable pointsCounter) {  
-        super(coordinates);
+        super(coordinates, pointsCounter);
         this.index = new IntWritable(index.get());
-        this.pointsCounter = new IntWritable(pointsCounter.get());
     }
     Centroid(List<DoubleWritable> coordinates) {
-        super(coordinates);
+        super(coordinates, new IntWritable(0));
         this.index = new IntWritable(0);
-        this.pointsCounter = new IntWritable(0);
     }
     
     Centroid(Centroid centroid){
-        super(centroid.getCoordinates());
+        super(centroid.getCoordinates(), centroid.getPointsCounter());
         setIndex(centroid.getIndex());
-        setPointsCounter(centroid.getPointsCounter());
     }
     
     public void readFields(DataInput dataInput) throws IOException {
         super.readFields(dataInput);
         index = new IntWritable(dataInput.readInt());
-        pointsCounter = new IntWritable(dataInput.readInt());
     }
 
     public void write(DataOutput dataOutput) throws IOException {
         super.write(dataOutput);
         dataOutput.writeInt(index.get());
-        dataOutput.writeInt(pointsCounter.get());
     }
     
     @Override
@@ -88,11 +82,5 @@ public class Centroid extends Point{
     void setIndex(IntWritable index) {
         this.index = new IntWritable(index.get());
     }
-    
-    IntWritable getPointsCounter() {
-        return pointsCounter;
-    }
-    void setPointsCounter(IntWritable pointsCounter) {
-        this.pointsCounter = new IntWritable(pointsCounter.get());
-    }
+   
 }

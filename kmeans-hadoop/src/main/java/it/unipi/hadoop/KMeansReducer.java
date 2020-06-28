@@ -25,12 +25,12 @@ public class KMeansReducer extends Reducer<Centroid, Point, IntWritable, Centroi
         Configuration conf = context.getConfiguration();
         Centroid newCentroid = new Centroid(conf.getInt("dimension", 2));
    
-        int counterPoints = newCentroid.getPointsCounter().get();
+        int counterPoints = 0;
         for(Point point : points) {
             for (int i = 0; i < point.getCoordinates().size(); i++) {
                 newCentroid.getCoordinates().get(i).set(newCentroid.getCoordinates().get(i).get() + point.getCoordinates().get(i).get());
             }
-            counterPoints += consideredCentroid.getPointsCounter().get();
+            counterPoints += point.getPointsCounter().get();
         }
         newCentroid.setIndex(consideredCentroid.getIndex());
         newCentroid.setPointsCounter(new IntWritable(counterPoints));

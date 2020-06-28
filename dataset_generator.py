@@ -1,7 +1,7 @@
 import sys
 from sklearn.datasets import make_blobs
 
-DATA_PATH = "input/"
+DATA_PATH = "kmeans-hadoop/"
 
 
 if len(sys.argv) < 4:
