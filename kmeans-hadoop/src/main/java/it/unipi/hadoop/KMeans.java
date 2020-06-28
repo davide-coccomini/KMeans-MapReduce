@@ -65,25 +65,8 @@ public class KMeans
             ex.printStackTrace();
         }
           
-        
-      
-        
         writer.syncFs();
         writer.close();
-        
-        fs = FileSystem.get(conf);
-        
-        SequenceFile.Reader reader = new SequenceFile.Reader(fs, centroidsPath, conf);
-        IntWritable key = new IntWritable();
-        Centroid value = new Centroid();
-        
-        System.out.println("Centroids from seq file:");
-        while(reader.next(key,value)){
-            System.out.println(value.toString());
-        }
-        reader.close();
-        
-        
     } 
     
     public static void main( String[] args )
@@ -95,7 +78,6 @@ public class KMeans
 
         try {
             final Configuration conf = new Configuration();
-            FileSystem hdfs = FileSystem.get(conf);
 
             int k = Integer.parseInt(args[0]);
             conf.setInt("k", k);
@@ -115,23 +97,11 @@ public class KMeans
             
             Job job = null;
             int iteration = 0;
+            
+            FileSystem hdfs = FileSystem.get(conf);
+            
             while(!converged){
                 System.out.println("Iteration: " + iteration);
-                
-                
-                hdfs = FileSystem.get(conf);
-
-                SequenceFile.Reader reader = new SequenceFile.Reader(hdfs, centroidsPath, conf);
-                IntWritable key = new IntWritable();
-                Centroid value = new Centroid();
-
-                int counter = 0;
-                System.out.println("Centroidi");
-                while(reader.next(key,value)){
-                    System.out.println(counter++);
-                }
-                reader.close();
-                
                 
                 job = new Job(conf, "kmeans");
 
@@ -139,8 +109,7 @@ public class KMeans
                 FileOutputFormat.setOutputPath(job, outputPath);
 
                 job.setJarByClass(KMeans.class);
-
-
+                
                 job.setMapperClass(KMeansMapper.class);
                 job.setCombinerClass(KMeansCombiner.class);
                 job.setReducerClass(KMeansReducer.class);
