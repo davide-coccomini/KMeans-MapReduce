@@ -98,6 +98,6 @@ if __name__ == "__main__":
             print("Centroids converged")
             break
 
-    print(new_centroids)
+    sc.parallelize(new_centroids).saveAsTextFile("result")
     sc.stop()
 
