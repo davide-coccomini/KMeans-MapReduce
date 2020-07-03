@@ -32,9 +32,17 @@ The Reducer algorithm takes as input a centroid and a list of partial sums toget
   <img src="https://github.com/davide-coccomini/kmeans-mapreduce/blob/master/Images/ReduceMethod.JPG">
 </p>
 
+### Validation
+In order to verify the validity of the results obtained and therefore the coherence of the clusters resulting from both programs, a Python program has been developed to plot all the points of the dataset considered and the resulting centroids. In the example below you can see a test performed using the IRIS dataset with 4 dimensions and 150 entities, grouped in 3 clusters
+<p align="center">
+  <img src="https://github.com/davide-coccomini/kmeans-mapreduce/blob/master/Images/iris.png">
+</p>
+
 
 ### Times comparison
 Observing the times obtained from various executions of the programs written in Spark and Hadoop, it is possible to see a significantly higher speed in the executions of the former. In addition, the execution time is further reduced by using the cache to ensure persistence.
 <p align="center">
   <img src="https://github.com/davide-coccomini/kmeans-mapreduce/blob/master/Images/TimeTable.jpg">
 </p>
+
+
