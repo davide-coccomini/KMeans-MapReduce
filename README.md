@@ -40,7 +40,7 @@ In order to verify the validity of the results obtained and therefore the cohere
 
 
 ### Times comparison
-Observing the times obtained from various executions of the programs written in Spark and Hadoop, it is possible to see a significantly higher speed in the executions of the former. In addition, the execution time is further reduced by using the cache to ensure persistence.
+Observing the times, in seconds, obtained from various executions of the programs written in Spark and Hadoop, it is possible to see a significantly higher speed in the executions of the former. In addition, the execution time is further reduced by using the cache to ensure persistence.
 <p align="center">
   <img src="https://github.com/davide-coccomini/kmeans-mapreduce/blob/master/Images/TimeTable.jpg">
 </p>
