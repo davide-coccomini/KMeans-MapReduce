@@ -13,7 +13,9 @@ More in detail, the whole MapReduce process goes through four steps of execution
 - **Mapping**: Data in each split is passed to a mapping function to produce as output key-value pairs;
 - **Shuffling**: Nodes redistribute data based on the output keys produced by the map function, such that all data belonging to one key is located on the same worker node;
 - **Reducing**: Values from Shuffling phase are combined processing each group of output data, per key, in parallel, and a single output value is returned. If more Reducers are used, the MapReduce system collects all the Reduce output and sorts it by key to produce the final outcome.
-
+<p align="center">
+  <img src="https://github.com/davide-coccomini/kmeans-mapreduce/blob/master/Images/algorithm.png">
+</p>
 ### Hadoop framework
 In this project, the following structure of MapReduce algorithm will be used:
 
